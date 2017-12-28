@@ -1,0 +1,24 @@
+CACHE MANIFEST
+#version: 1513463221
+
+app/css/passGuard.css
+app/js/KryptoHash.js
+app/js/main.js
+app/js/passGuard.js
+app/js/passGuardInfo.js
+app/keys-icon.png
+app/lib/bootstrap-3.2.0-dist/css/bootstrap-theme.min.css
+app/lib/bootstrap-3.2.0-dist/css/bootstrap.min.css
+app/lib/bootstrap-3.2.0-dist/fonts/glyphicons-halflings-regular.eot
+app/lib/bootstrap-3.2.0-dist/fonts/glyphicons-halflings-regular.svg
+app/lib/bootstrap-3.2.0-dist/fonts/glyphicons-halflings-regular.ttf
+app/lib/bootstrap-3.2.0-dist/fonts/glyphicons-halflings-regular.woff
+app/lib/bootstrap-3.2.0-dist/js/bootstrap.min.js
+app/lib/bootstrap-select/css/bootstrap-select.min.css
+app/lib/bootstrap-select/js/bootstrap-select.min.js
+app/lib/cryptoJs/enc-base64-min.js
+app/lib/cryptoJs/pbkdf2.js
+app/lib/cryptoJs/sha3.js
+app/lib/jQuery/jquery-3.2.1.min.js
+index.html
+server.js
