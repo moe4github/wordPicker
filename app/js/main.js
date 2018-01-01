@@ -1,185 +1,208 @@
 ( function() {
 
+    Number.prototype.toFormatedString = function () {
+        return this < 10 ? "0" + this : this;
+    };
+    
+    Number.prototype.toTimeString = function () {
+        return (Math.trunc(this/60)).toFormatedString() + ':' + (this%60).toFormatedString();
+    };
+
+    String.prototype.toSekunden = function () {
+        var [minuten, sekunden] = this.split(':', 2);
+        return parseInt(minuten) * 60 + parseInt(sekunden);
+    }
+
+    var global_vars     =   {
+                                default_timer: "01:30",
+                            };
+
+    var timer = {
+        
+        default_timer:  global_vars.default_timer,
+        delta_sekunde:  5,
+        interval_id:    null,
+
+        set_timer:      function(timer) {
+                                            this.default_timer = timer;
+                                            return;
+                                        },
+
+        get_timer:      function()      {
+                                            return this.default_timer;
+                                        },
+
+        inc_sekunde:    function()      {
+                                            var sekunden = this.default_timer.toSekunden();
+                                            sekunden += this.delta_sekunde;
+                                            this.default_timer = sekunden.toTimeString();
+                                            return;
+                                        },
+        dec_sekunde:    function()      {
+                                            var sekunden = this.default_timer.toSekunden();
+                                            if ( sekunden - this.delta_sekunde > 0 ){
+                                                sekunden -= this.delta_sekunde;
+                                                this.default_timer = sekunden.toTimeString();
+                                            }
+                                            return;
+                                        },
+        start:          function(fkt)   {
+                                            this.interval_id = window.setInterval(fkt, 1000);
+                                            return;
+                                        },
+        stop:           function()      {
+                                            if (typeof global_vars.interval_id !== 'undefined') {
+                                                clearInterval(this.interval_id);
+                                            }
+                                            return;
+                                        },
+
+    };
+
+    var char_list       =   [
+                                'A', 'B', 'C', 'D',
+                                'E', 'F', 'G', 'H',
+                                'I', 'J', 'K', 'L',
+                                'M', 'N', 'O', 'P',
+                                'Q', 'R', 'S', 'T',
+                                'U', 'V', 'W', 'X',
+                                'Y', 'Z'
+                            ];
+
     /* init function*/
-    function initPageSkript() {
+    function init() {
 
-        // init js functions
-        $( "#btnTogglePasswordView"     ).click  ( 
-                                                    function() {
-                                                        toggle_password_view();
-                                                        setTimeout( toggle_password_view, 5000 );
-                                                        return;
-                                                    }
-                                                );
-            
-        $( "#btnIncPasswordLength"      ).click( increasePassLength );
-        $( "#btnDecPasswordLength"      ).click( decreasePassLength );
-        $( "#btnGeneratePassword"       ).click( pwd );
-        $( "#btnGenerateVPNPassword"    ).click( vpn_pwd );
-        $( "#clear_password"            ).click( reset_form_input );
-        $( "#about_passGuard"           ).click( about_passGuard );
-        
-        $( "#btnTest" ).click( appDB.open );
-        $( "#btnAdd" ).click( appDB.add_item );
-        $( "#btnGet" ).click( appDB.get_item );
-        
-        create_password_category_list();
+        $( '#btnStart' ).click( get_char );
 
-        $( "#outputPassword" ).focus( function() {
-            $( "#outputPassword" ).select().mouseup( function(e) {
-                e.preventDefault();
-                $( this ).unbind( "mouseup" );
-            });
+        $( '#btnDecTimer' ).click( function() { 
+            timer.dec_sekunde(); 
+            $( '#btnTimer' ).text( timer.default_timer );
+            return;
         });
+        $( '#btnIncTimer' ).click( function() {
+            timer.inc_sekunde(); 
+            $( '#btnTimer' ).text( timer.default_timer );
+            return;
+        });
+        $( '#btnTimer' ).text( timer.default_timer );
+        
+        $( '#btnReset' ).click( init_char_list );
+        $( '#btnAbout' ).click( about_word_picker );
 
-        // init startup properties
-        $( "#inputPasswordLength" ).val( app_config.get_default_pwd_length() );
-        reset_form_input();
+        init_char_list();
+        return;
     }
 
-    var toggle_password_view = function() {
-
-        // toggle input elements
-        var master_key_input        =   document.getElementById("master_key");
-        var master_key_input_new    =   master_key_input.cloneNode(false);
-
-        master_key_input_new.type   =   master_key_input_new.type == "password"
-                                        ? "text"
-                                        : "password";
-
-        master_key_input.parentNode.replaceChild(
-            master_key_input_new,
-            master_key_input
-        );
-
-        // toggle button icon
-        $( "#btnTogglePasswordView > span" ).toggleClass( "glyphicon-asterisk glyphicon-eye-open" );
-
-        return;            
+    function get_char() {
+        if (typeof global_vars.interval_id !== 'undefined') { clearInterval(global_vars.interval_id); }
+        
+        start_timer();
+        $('#char-select').text( start_word_picker() );
+        return;
     }
 
-    var create_password_category_list = function() {
+    function start_word_picker() {
+        var chars   = document.getElementsByClassName('char_aktiv');
+        var picked_char;
 
-        var select = document.createElement('select');
-            select.classList.add("selectpicker", "show-tick");
+        if ( chars.length > 0 ) {
+            var char_id     = getRandomInt(0, chars.length - 1);
+            var picked_char = chars[char_id].dataset.buchstabe;
+           
+            $(chars[char_id]).toggleClass('char_selected char_aktiv');
 
-        $("#password_category").append(select);
-
-        for( var i=0; i < app_config.password_category_list.length; i++) {
-            var item = app_config.password_category_list[i];
-            var option                  = document.createElement('option');
-
-            if ( item.value ) {
-                option.text             =   item.text;
-                option.value            =   item.value;
-
-                if (item.value == app_config.get_default_pwd_length()) {
-                    option.dataset.subtext  = 'default length (' + item.value + ')';
-                    option.setAttribute('selected', 'selected');
-                } else {
-                    option.dataset.subtext  = 'length (' + item.value + ')';
-                }
-
-            } else {
-                option.dataset.divider  = 'true';
-            }
-
-            $("#password_category > select").append(option);
-
+            return picked_char;
         }
-
-        $("#password_category > select")
-            .selectpicker({
-                style: "btn-primary",
-                width: "100%",
-                size: 4
-            })
-            .change(function() {
-               $( "#inputPasswordLength" ).val( this.value ); 
-            });
-
         return;
     }
     
-    // Passwortlänge - Plusbutton 
-    increasePassLength = function () {
-        $( "#inputPasswordLength" ).val( parseInt( $( "#inputPasswordLength" ).val() ) + 1 );
+    function getRandomInt(min, max) {
+        if (typeof min === 'undefined') {min = 0;}
+        if (typeof max === 'undefined') {max = char_list.length - 1;}
+
+        return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
-    // Passwortlänge - Minusbutton
-    decreasePassLength = function () {
+    function init_char_list() {
+        
+        var char_list_elem = document.getElementsByClassName('char_list')[0];
 
-        if  (
-                    parseInt( $( "#inputPasswordLength" ).val() ) - 1
-                <   app_config.min_password_length 
-            ) 
-        {
-            passGuardInfo.show(
-                {
-                    type:   'error',
-                    title:  'Password is too short',
-                    text:   'Please increase password length!',
-                }
-            );
-            return 0;
-
-        } 
-        else if (
-                        parseInt( $( "#inputPasswordLength" ).val() ) - 1 
-                    <   app_config.min_secure_password_length
-                )
-        {
-            passGuardInfo.show(
-                {
-                    type:   'warning',
-                    title:  'Short password!',
-                    text:   'Password length is unsecure!',
-                }
-            );
+        // Erneuter Aufbau der Buchstabenliste
+        while (char_list_elem.firstChild) {
+            char_list_elem.removeChild( char_list_elem.firstChild );
         }
 
-        $( "#inputPasswordLength" ).val( parseInt( $( "#inputPasswordLength" ).val() ) - 1 );
-    }
+        for (var i=0; i<char_list.length; i++) {
 
-    // Passwort generieren
-    function pwd() {
-        $( "#outputPassword" ).val(
-            passGuard.generate_pwd(
-                {
-                    key:                $( "#master_key" ).val(),
-                    service:            $( "#inputService" ).val(),
-                    password_length:    $( "#inputPasswordLength" ).val()
-                }
-            )
-        );
+            var cell_elem = document.createElement('div');
+                cell_elem.classList.add('char_aktiv', 'cursor-pointer');
+                cell_elem.id        = i;
+                cell_elem.dataset.buchstabe = char_list[i];
+                cell_elem.innerHTML = char_list[i];
+                cell_elem.onclick   = function(){
+                                                    this.classList.toggle('char_aktiv');
+                                                    this.classList.toggle('char_inaktiv');
+                                                };
+
+            char_list_elem.appendChild(cell_elem);
+        }
+        
+        start_screensaver();
+        return;
+    }
+    
+    function start_timer () {
+        $('#btnStart')
+            .toggleClass('btn-success btn-danger')
+            .prop('disabled', true);
+        timer.start(refresh_counter);
         return;
     }
 
-    // VPN Passwort generieren
-    function vpn_pwd () {
-        $( "#outputPassword" ).val( passGuard.generate_vpn_pwd );
+    function stop_timer () {
+        timer.stop();
+
+        $('#btnStart')
+            .toggleClass('btn-success btn-danger')
+            .prop('disabled', false);
+        
+        $( '#btnTimer' ).text( timer.default_timer );
         return;
     }
 
-    var reset_form_input = function () {
+    function refresh_counter () {
+        var sekunden = $('#btnTimer').text().toSekunden();
 
-        $( "#outputPassword").val( null );
-        $( "#inputService"  ).val( null );
-        $( "#master_key"    ).val( null );
+        if (sekunden == 0) {
+            stop_timer();
+            return;
+        }
+
+        sekunden--;
+
+        $('#btnTimer').text( sekunden.toTimeString() );
         return;
     }
 
-    var about_passGuard = function () {
-        passGuardInfo.show(
+    function start_screensaver () {
+        global_vars.interval_id =   window.setInterval(
+                                        function(){
+                                            $('#char-select').text( char_list[getRandomInt()] );
+                                        },
+                                        500
+                                    );
+        return;
+    }
+
+    function about_word_picker () {
+        dialog.show(
             {
                 type:   'info',
-                title:  'About passGuard',
+                title:  'About wortPicker',
                 text:   'Uses:' +
                         '<ul>' +
-                            '<li>cryptoJs</li>' +
                             '<li>jQuery 3.2.1</li>' +
                             '<li>Bootstrap 3.3.7</li>' +
-                            '<li>Bootstrap-Select</li>' +
                         '</ul>',
             }
         );
@@ -187,6 +210,6 @@
     }
 
     // run init
-    initPageSkript();
+    init();
 
 }() );

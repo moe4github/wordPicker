@@ -15,7 +15,7 @@
         <!-- special apple things -->
         <link rel="apple-touch-icon" href="app/keys-icon.png">
 
-        <title>passGuard</title>
+        <title>wortPicker</title>
 
         <!-- compiled and minified CSS -->
         <link href="app/lib/bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
@@ -27,124 +27,55 @@
         <link href="app/lib/bootstrap-3.3.7-dist/css/bootstrap-theme.min.css" rel="stylesheet">
 
         <!-- custom css -->
-        <link href="app/css/passGuard.css" rel="stylesheet">
+        <link href="app/css/wordPicker.css" rel="stylesheet">
 
   	</head>
 	<body>
 		<div class="container">
-
-	  		<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-
-  				<div class="panel panel-primary" style="position:relative;">
-                    <div class="panel-heading">
-                        <h4 class="panel-title">passGuard</h4>
-                    </div>
-					<div id="clear_password" class="set-right cursor-pointer">
-						<span class="glyphicon glyphicon-trash bg-primary"></span>
-					</div>
-    				<div class="panel-body ">
-                        <form>
-
-                            <!-- input master password -->
-                            <div class="form-group">
-                                <div class="input-group">
-                                    <input type="password" class="form-control" id="master_key" placeholder="key">
-                                    <span class="input-group-btn">
-                                        <button type="button" class="btn btn-primary" id="btnTogglePasswordView">
-                                            <span class="glyphicon glyphicon-eye-open"></span>
-                                        </button> 
-                                    </span>
-                                </div>
-                            </div>
-                                
-                            <!-- input service -->
-                            <div class="form-group">
-                                <input type="text" class="form-control" id="inputService" placeholder="service">
-                            </div>
-                           
-                            <!-- select password length -->
-                            <div class="form-group" id="password_category"></div>
-
-                            <!-- output of password -->
-                            <div class="form-group">
-                                <textarea 
-                                    class="form-control success" 
-                                    row="3" 
-                                    id="outputPassword" 
-                                    readonly="readonly" 
-                                    placeholder="generated password">
-                                </textarea>
-                            </div>
-
-                            <!-- password generation button -->
-                            <button type="button" class="btn btn-danger btn-block"
-                                id="btnGeneratePassword">Generate</button>
-      			        
-                        </form>
+            <div class="panel panel-primary">
+                <div id="char-select" class="panel-body"></div>
+            </div>
+            
+            <p>
+                <button type="button" class="btn btn-success btn-block" id="btnStart"><b>Start</b></button>
+            </p>
+            
+            <p>
+            <div class="row">
+                <div class="col-md-5">
+                    <button type="button" class="btn btn-default btn-block" id="btnReset"><b>Reset</b></button>
+                </div>
+                <div class="col-md-2"></div>
+                <div class="col-md-5">
+                    <div class="btn-group btn-group-justified" role="group">
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-primary" id="btnDecTimer">-</button>
+                        </div>
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-primary" id="btnTimer"></button>
+                        </div>
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-primary" id="btnIncTimer">+</button>
+                        </div>
                     </div>
                 </div>
+            </div>
+            </p>
 
-  				<div class="panel panel-primary">
-                    <div class="panel-heading" role="tab" id="headingProperties">
-                        <h4 class="panel-title">
-                            <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseProperties" aria-expanded="false" aria-controls="collapseProperties">
-                                properties
-                            </a>
-                        </h4>
-                    </div>
-                
-                    <div id="collapseProperties" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingProperties">
-						<div class="panel-body">
-							<button type="button" class="btn btn-primary btn-block" id="btnGenerateVPNPassword">
-                                Generate VPN Password
-                            </button>
-							<button type="button" class="btn btn-primary btn-block" id="btnTest">
-                                Test DB
-                            </button>
-							<button type="button" class="btn btn-primary btn-block" id="btnAdd">
-                                Add
-                            </button>
-							<button type="button" class="btn btn-primary btn-block" id="btnGet">
-                                Get
-                            </button>
-							<p>	
-								<div class="btn-group btn-group-justified" data-toggle="buttons">
-									<label class="btn btn-primary active">
-										<input type="radio" name="o1" id="o1" autocomplete="off" checked>special sign off</input>
-									</label>
-									<label class="btn btn-primary">
-										<input type="radio" name="o2" id="o2" autocomplete="off">special sign on</input>
-									</label>
-								</div>	
-							</p>
-										
-							<div class="form-group">
-								<label for="inputService" class="control-label">password length</label>
-								<div class="input-group">
-									<span class="input-group-btn">
-										<button class="btn btn-primary" type="button" id="btnDecPasswordLength">
-											<span class="glyphicon glyphicon-minus-sign"></span>
-										</button>
-									</span>
-									<input type="text" class="form-control text-right" id="inputPasswordLength" disabled=disabled>
-									<span class="input-group-btn">
-										<button class="btn btn-primary" type="button" id="btnIncPasswordLength">
-											<span class="glyphicon glyphicon-plus-sign"></span>
-										</button>
-									</span>
-								</div>
-							</div>
-						</div>
-					</div>
-  				</div>
-	
-			</div>
-
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h4 class="panel-title">Status</h4>
+                </div>
+                <div class="panel-body">
+                    <div class="char_list"></div>
+                </div>
+            </div>
+            
             <!-- footer -->
             <div>
-				<div class="pull-left">&copy; pimpelchen 2014</div>
+				<div class="pull-left">&copy; pimpelchen Dezember 2017</div>
 				<div class="pull-right">
-					<span class="glyphicon glyphicon-info-sign text-primary cursor-pointer" id="about_passGuard"></span>
+					<span class="glyphicon glyphicon-info-sign text-primary cursor-pointer" id="btnAbout"></span>
 				</div>
             </div>
 		</div>
@@ -162,17 +93,9 @@
         <!-- compiled and minified JavaScript -->
         <script src="app/lib/bootstrap-select/js/bootstrap-select.min.js"></script>
 
-        <!-- https://code.google.com/p/crypto-js/ -->
-		<script src="app/lib/cryptoJs/sha3.js"></script>
-		<script src="app/lib/cryptoJs/enc-base64-min.js"></script>
-		<script src="app/lib/cryptoJs/pbkdf2.js"></script>
-
         <!-- custom JavaScript -->
-        <script src="app/js/KryptoHash.js"></script>
-        <script src="app/js/passGuard.js"></script>
-        <script src="app/js/passGuardInfo.js"></script>
+        <script src="app/js/dialog.js"></script>
         <script src="app/js/appConfig.js"></script>
-        <script src="app/js/appDB.js"></script>
         
         <script src="app/js/main.js"></script>
 
