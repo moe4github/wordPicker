@@ -1,0 +1,47 @@
+
+/* template spezifische Anpassungen */
+body {
+	padding:        10px;
+    background:     #428bca;
+}
+
+.container {
+	padding-top:    20px;
+    padding-bottom: 20px;
+    border-radius:  15px 0px 15px 0px;
+    background:     #fff;
+}
+
+.char_list > div {
+	font-size:      1.2em;
+    display:        inline-block;
+    vertical-align: middle;
+    margin:         4px;
+}
+
+.char_aktiv {
+    color:          #337ab7;
+    font-weight:    bold;
+}
+
+.char_inaktiv {
+    color: #3339;
+}
+
+.char_selected {
+    text-decoration:    line-through;
+    font-weight:        bold;
+    color:              #bd2525;
+}
+
+#char-select {
+    font-family:    'Times New Roman', Times, serif;
+    font-weight:    bold;
+    font-size:      16em;
+    text-align:     center;
+}
+
+.cursor-pointer {
+	cursor:     pointer;
+}
+
