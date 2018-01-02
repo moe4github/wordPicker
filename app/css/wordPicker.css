@@ -41,6 +41,10 @@ body {
     text-align:     center;
 }
 
+.panel-title {
+    display:        inline-block;
+}
+
 .cursor-pointer {
 	cursor:     pointer;
 }

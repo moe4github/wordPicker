@@ -1,3 +1,8 @@
+// Add animation when timer stop
+// Add sound when timer stop
+// --- Finish ---
+// refactor Code -- vor allem Timer Objekt und seine Nutzung!
+
 ( function() {
 
     Number.prototype.toFormatedString = function () {
@@ -87,6 +92,8 @@
         $( '#btnTimer' ).text( timer.default_timer );
         
         $( '#btnReset' ).click( init_char_list );
+        $( '#btnSound' ).click( toggle_sound );
+
         $( '#btnAbout' ).click( about_word_picker );
 
         init_char_list();
@@ -191,6 +198,11 @@
                                         },
                                         500
                                     );
+        return;
+    }
+
+    function toggle_sound () {
+        $( '#btnSound > span' ).toggleClass('glyphicon-volume-up glyphicon-volume-off');
         return;
     }
 
