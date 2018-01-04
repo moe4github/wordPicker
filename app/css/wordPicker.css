@@ -37,7 +37,7 @@ body {
 #char-select {
     font-family:    'Times New Roman', Times, serif;
     font-weight:    bold;
-    font-size:      16em;
+    font-size:      15em;
     text-align:     center;
 }
 
@@ -49,3 +49,17 @@ body {
 	cursor:     pointer;
 }
 
+@keyframes finish {
+    0%  {
+            background-color:   #337ab7;
+        }
+    25% {
+            background-color:   #fff;
+        }
+    50% {
+            background-color:   #337ab7;
+        }
+    100%{
+            background-color:   #fff;
+        }
+}

@@ -1,7 +1,5 @@
 // Add animation when timer stop
 // Add sound when timer stop
-// --- Finish ---
-// refactor Code -- vor allem Timer Objekt und seine Nutzung!
 
 ( function() {
 
@@ -16,54 +14,10 @@
     String.prototype.toSekunden = function () {
         var [minuten, sekunden] = this.split(':', 2);
         return parseInt(minuten) * 60 + parseInt(sekunden);
-    }
-
-    var global_vars     =   {
-                                default_timer: "01:30",
-                            };
-
-    var timer = {
-        
-        default_timer:  global_vars.default_timer,
-        delta_sekunde:  5,
-        interval_id:    null,
-
-        set_timer:      function(timer) {
-                                            this.default_timer = timer;
-                                            return;
-                                        },
-
-        get_timer:      function()      {
-                                            return this.default_timer;
-                                        },
-
-        inc_sekunde:    function()      {
-                                            var sekunden = this.default_timer.toSekunden();
-                                            sekunden += this.delta_sekunde;
-                                            this.default_timer = sekunden.toTimeString();
-                                            return;
-                                        },
-        dec_sekunde:    function()      {
-                                            var sekunden = this.default_timer.toSekunden();
-                                            if ( sekunden - this.delta_sekunde > 0 ){
-                                                sekunden -= this.delta_sekunde;
-                                                this.default_timer = sekunden.toTimeString();
-                                            }
-                                            return;
-                                        },
-        start:          function(fkt)   {
-                                            this.interval_id = window.setInterval(fkt, 1000);
-                                            return;
-                                        },
-        stop:           function()      {
-                                            if (typeof global_vars.interval_id !== 'undefined') {
-                                                clearInterval(this.interval_id);
-                                            }
-                                            return;
-                                        },
-
     };
 
+    var timer;
+    var global_vars     =   {};
     var char_list       =   [
                                 'A', 'B', 'C', 'D',
                                 'E', 'F', 'G', 'H',
@@ -74,22 +28,72 @@
                                 'Y', 'Z'
                             ];
 
+    var Timer = function (timer_in_sec) {
+        
+        this.value          = timer_in_sec;
+        this.bind_node      = null;
+        this.interval_id    = null;
+        this.stop_fkt       = null;
+
+    };
+
+    Timer.prototype = {
+
+        set_value:      function(sec)   {   
+                                            this.value = sec;
+                                            if( typeof this.bind_node !== null ) {
+                                                this.bind_node.innerText = this.value.toTimeString();
+                                            }
+                                            return;
+                                        },
+
+        set_bind_node:  function(node)  {
+                                            this.bind_node = node;
+                                            this.set_value(this.value);
+                                            return;
+                                        },
+
+        start:          function(fkt)   {
+                                            if (typeof fkt !== 'undefined') {
+                                                this.stop_fkt = fkt;
+                                            }
+                                            this.interval_id = window.setInterval(this.timer_trigger, 1000);
+                                            return;
+                                        },
+
+        stop:           function()      {
+                                            if (typeof this.interval_id !== null) {
+                                                clearInterval(this.interval_id);
+                                            }
+                                            
+                                            if (typeof this.stop_fkt !== null) {
+                                                this.stop_fkt();
+                                            }
+                                            return;
+                                        },
+
+        timer_trigger:  function()      {
+                                            // timer finished?
+                                            if (this.value -1 < 0){
+                                                this.stop();
+                                            }
+
+                                            this.set_value(this.value--);
+                                            return;
+                                        },
+    };
+
+
     /* init function*/
     function init() {
 
+        timer = new Timer(75);
+        timer.set_bind_node( document.getElementById('btnTimer') );
+
         $( '#btnStart' ).click( get_char );
 
-        $( '#btnDecTimer' ).click( function() { 
-            timer.dec_sekunde(); 
-            $( '#btnTimer' ).text( timer.default_timer );
-            return;
-        });
-        $( '#btnIncTimer' ).click( function() {
-            timer.inc_sekunde(); 
-            $( '#btnTimer' ).text( timer.default_timer );
-            return;
-        });
-        $( '#btnTimer' ).text( timer.default_timer );
+        $( '#btnDecTimer' ).click( function() {timer.set_value(timer.value -= 5);});
+        $( '#btnIncTimer' ).click( function() {timer.set_value(timer.value += 5);});
         
         $( '#btnReset' ).click( init_char_list );
         $( '#btnSound' ).click( toggle_sound );
@@ -131,7 +135,6 @@
     }
 
     function init_char_list() {
-        
         var char_list_elem = document.getElementsByClassName('char_list')[0];
 
         // Erneuter Aufbau der Buchstabenliste
@@ -162,32 +165,15 @@
         $('#btnStart')
             .toggleClass('btn-success btn-danger')
             .prop('disabled', true);
-        timer.start(refresh_counter);
+
+        timer.start(stop_timer);
         return;
     }
 
     function stop_timer () {
-        timer.stop();
-
         $('#btnStart')
             .toggleClass('btn-success btn-danger')
             .prop('disabled', false);
-        
-        $( '#btnTimer' ).text( timer.default_timer );
-        return;
-    }
-
-    function refresh_counter () {
-        var sekunden = $('#btnTimer').text().toSekunden();
-
-        if (sekunden == 0) {
-            stop_timer();
-            return;
-        }
-
-        sekunden--;
-
-        $('#btnTimer').text( sekunden.toTimeString() );
         return;
     }
 
