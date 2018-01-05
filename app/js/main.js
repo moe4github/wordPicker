@@ -1,5 +1,4 @@
 // Add animation when timer stop
-// Add sound when timer stop
 
 ( function() {
 
@@ -28,61 +27,70 @@
                                 'Y', 'Z'
                             ];
 
+    // Timer constructor
     var Timer = function (timer_in_sec) {
-        
-        this.value          = timer_in_sec;
-        this.bind_node      = null;
-        this.interval_id    = null;
-        this.stop_fkt       = null;
+        var self            = this;
 
+        self.value          = timer_in_sec;
+        self.default_value  = null;
+        self.bind_node      = null;
+        self.interval_id    = null;
+        self.stop_fkt       = null;
+
+        // public methods
+        self.set_value      = function(sec)
+                                {   
+                                    self.value = sec;
+                                    if( self.bind_node !== null ) {
+                                        self.bind_node.innerText = self.value.toTimeString();
+                                    }
+                                    return;
+                                };
+
+        self.set_bind_node  = function(node)
+                                {
+                                    self.bind_node = node;
+                                    self.set_value(self.value);
+                                    return;
+                                };
+
+        self.start          = function(fkt)
+                                {
+                                    self.default_value = self.value.valueOf();
+
+                                    if (typeof fkt !== 'undefined') {
+                                        self.stop_fkt = fkt;
+                                    }
+                                    self.interval_id = window.setInterval(timer_trigger, 1000);
+                                    return;
+                                };
+
+        self.stop           = function()
+                                {
+                                    if ( self.interval_id !== null ) {
+                                        window.clearInterval(self.interval_id);
+                                        self.set_value(self.default_value);
+                                    }
+                                    
+                                    if ( self.stop_fkt !== null) {
+                                        self.stop_fkt();
+                                    }
+                                    return;
+                                };
+
+        // private method
+        timer_trigger       = function()
+                                {   
+                                    // timer finished?
+                                    if (self.value -1 < 0){
+                                        self.stop();
+                                        return;
+                                    }
+
+                                    self.set_value(--self.value);
+                                    return;
+                                };
     };
-
-    Timer.prototype = {
-
-        set_value:      function(sec)   {   
-                                            this.value = sec;
-                                            if( typeof this.bind_node !== null ) {
-                                                this.bind_node.innerText = this.value.toTimeString();
-                                            }
-                                            return;
-                                        },
-
-        set_bind_node:  function(node)  {
-                                            this.bind_node = node;
-                                            this.set_value(this.value);
-                                            return;
-                                        },
-
-        start:          function(fkt)   {
-                                            if (typeof fkt !== 'undefined') {
-                                                this.stop_fkt = fkt;
-                                            }
-                                            this.interval_id = window.setInterval(this.timer_trigger, 1000);
-                                            return;
-                                        },
-
-        stop:           function()      {
-                                            if (typeof this.interval_id !== null) {
-                                                clearInterval(this.interval_id);
-                                            }
-                                            
-                                            if (typeof this.stop_fkt !== null) {
-                                                this.stop_fkt();
-                                            }
-                                            return;
-                                        },
-
-        timer_trigger:  function()      {
-                                            // timer finished?
-                                            if (this.value -1 < 0){
-                                                this.stop();
-                                            }
-
-                                            this.set_value(this.value--);
-                                            return;
-                                        },
-    };
-
 
     /* init function*/
     function init() {
@@ -90,15 +98,17 @@
         timer = new Timer(75);
         timer.set_bind_node( document.getElementById('btnTimer') );
 
-        $( '#btnStart' ).click( get_char );
+        $( '#btnStart'          ).click( get_char );
 
-        $( '#btnDecTimer' ).click( function() {timer.set_value(timer.value -= 5);});
-        $( '#btnIncTimer' ).click( function() {timer.set_value(timer.value += 5);});
+        $( '#btnDecTimer'       ).click( function() {timer.set_value(timer.value -= 5);});
+        $( '#btnIncTimer'       ).click( function() {timer.set_value(timer.value += 5);});
         
-        $( '#btnReset' ).click( init_char_list );
-        $( '#btnSound' ).click( toggle_sound );
+        $( '#btnReset'          ).click( reset );
 
-        $( '#btnAbout' ).click( about_word_picker );
+        $( '.language-option'   ).click( language_switch );
+        $( '.sound-off'         ).click( sound_off );
+
+        $( '#btnAbout'          ).click( about_word_picker );
 
         init_char_list();
         return;
@@ -174,6 +184,23 @@
         $('#btnStart')
             .toggleClass('btn-success btn-danger')
             .prop('disabled', false);
+
+        // play sound file
+        $( '.language-active' ).each( function() {
+            var audio = new Audio( $( this ).data( 'soundFile' ) );
+            audio.play();
+        });
+        return;
+    }
+
+    function reset () {
+        
+        if (typeof global_vars.interval_id !== 'undefined') {
+            clearInterval(global_vars.interval_id);
+        }
+        
+        timer.stop();
+        init_char_list();
         return;
     }
 
@@ -187,8 +214,25 @@
         return;
     }
 
-    function toggle_sound () {
-        $( '#btnSound > span' ).toggleClass('glyphicon-volume-up glyphicon-volume-off');
+    function sound_off () {
+        $( '.language-option' ).each( function() {
+            $( this ).removeClass('language-active');
+        });
+
+        $( '#sound-icon' ).removeClass('glyphicon-volume-up');
+        $( '#sound-icon' ).addClass('glyphicon-volume-off');
+        return;
+    }
+
+    function language_switch () {
+        $( '.language-option' ).each( function() {
+            $( this ).removeClass('language-active');
+        });
+
+        $( this ).addClass('language-active');
+        
+        $( '#sound-icon' ).removeClass('glyphicon-volume-off');
+        $( '#sound-icon' ).addClass('glyphicon-volume-up');
         return;
     }
 
@@ -201,6 +245,7 @@
                         '<ul>' +
                             '<li>jQuery 3.2.1</li>' +
                             '<li>Bootstrap 3.3.7</li>' +
+                            '<li>Icons from <a href="https://icons8.com/" target="_blank">icons8.com</a></li>' +
                         '</ul>',
             }
         );

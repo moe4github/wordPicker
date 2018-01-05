@@ -43,7 +43,7 @@
             <p>
             <div class="row">
                 <div class="col-md-5">
-                    <button type="button" class="btn btn-default btn-block" id="btnReset"><b>Reset</b></button>
+                    <button type="button" class="btn btn-primary btn-block" id="btnReset"><b>Reset</b></button>
                 </div>
                 <div class="col-md-2"></div>
                 <div class="col-md-5">
@@ -65,9 +65,38 @@
             <div class="panel panel-primary">
                 <div class="panel-heading">
                     <h4 class="panel-title">Status</h4>
-                    <div id="btnSound" class="cursor-pointer pull-right">
-						<span class="glyphicon glyphicon-volume-up bg-primary"></span>
-					</div>
+                    
+                    <div class="dropdown pull-right">
+                        
+                        <div class="dropdown-toggle cursor-pointer" data-toggle="dropdown">
+						    <span id="sound-icon" class="glyphicon glyphicon-volume-up bg-primary"></span>
+					        <span class="caret"></span>
+                        </div>
+                        
+                        <ul class="dropdown-menu" aria-labelledby="soundMenu">
+                            <li class="language-option" data-sound-file="app/audio/time_over_f_de.mp3">
+                                <a href="#">
+                                    <img src="app/icons/icons8-germany.png" height="25px">
+                                    <img src="app/icons/icons8-female-user.png" height="25px">
+                                </a>
+                            </li>
+                            <li class="language-option language-active" data-sound-file="app/audio/time_over_m_de.mp3">
+                                <a href="#">
+                                    <img src="app/icons/icons8-germany.png" height="25px">
+                                    <img src="app/icons/icons8-male-user.png" height="25px">
+                                </a>
+                            </li>
+                            <li class="language-option" data-sound-file="app/audio/time_over_f_en.mp3">
+                                <a href="#">
+                                    <img src="app/icons/icons8-great-britain.png" height="25px">
+                                    <img src="app/icons/icons8-female-user.png" height="25px">
+                                </a>
+                            </li>
+                            <li role="separator" class="divider"></li>
+                            <li class="sound-off"><a href="#"><span class="glyphicon glyphicon-volume-off"></span></a></li>
+                        </ul>
+
+                    </div>
                 </div>
                 <div class="panel-body">
                     <div class="char_list"></div>

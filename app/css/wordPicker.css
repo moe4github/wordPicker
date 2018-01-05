@@ -49,6 +49,24 @@ body {
 	cursor:     pointer;
 }
 
+.language-option {
+    opacity: 0.5;
+}
+
+.language-option.language-active {
+    opacity: 1;
+}
+
+.sound-off > a {
+    color:          #337ab7 !important;
+    font-weight:    bold    !important;
+    font-size:      1.5em   !important;
+}
+
+.dropdown-menu {
+    min-width: 0px;
+}
+
 @keyframes finish {
     0%  {
             background-color:   #337ab7;
