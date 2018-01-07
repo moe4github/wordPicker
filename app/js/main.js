@@ -1,4 +1,3 @@
-// Add animation when timer stop
 
 ( function() {
 
@@ -117,6 +116,8 @@
     function get_char() {
         if (typeof global_vars.interval_id !== 'undefined') { clearInterval(global_vars.interval_id); }
         
+        $( '#char_list' ).collapse('hide');
+
         start_timer();
         $('#char-select').text( start_word_picker() );
         return;
@@ -138,8 +139,8 @@
     }
     
     function getRandomInt(min, max) {
-        if (typeof min === 'undefined') {min = 0;}
-        if (typeof max === 'undefined') {max = char_list.length - 1;}
+        if (typeof min === 'undefined') { min = 0; }
+        if (typeof max === 'undefined') { max = char_list.length - 1; }
 
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
@@ -172,6 +173,8 @@
     }
     
     function start_timer () {
+        $( '#char-select' ).removeClass('times-up');
+        
         $('#btnStart')
             .toggleClass('btn-success btn-danger')
             .prop('disabled', true);
@@ -181,6 +184,8 @@
     }
 
     function stop_timer () {
+        $( '#char-select' ).addClass('times-up');
+        
         $('#btnStart')
             .toggleClass('btn-success btn-danger')
             .prop('disabled', false);

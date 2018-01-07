@@ -64,7 +64,11 @@
 
             <div class="panel panel-primary">
                 <div class="panel-heading">
-                    <h4 class="panel-title">Status</h4>
+                    <h4 class="panel-title">
+                        <a role="button" data-toggle="collapse" data-parent="#accordion" href="#char_list" aria-expanded="true" aria-controls="collapseOne">
+                            Status
+                        </a>
+                    </h4>
                     
                     <div class="dropdown pull-right">
                         
@@ -98,8 +102,10 @@
 
                     </div>
                 </div>
-                <div class="panel-body">
-                    <div class="char_list"></div>
+                <div id="char_list" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                    <div class="panel-body">
+                        <div class="char_list"></div>
+                    </div>
                 </div>
             </div>
             
