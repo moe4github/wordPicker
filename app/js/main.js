@@ -99,7 +99,13 @@
 
         $( '#btnStart'          ).click( get_char );
 
-        $( '#btnDecTimer'       ).click( function() {timer.set_value(timer.value -= 5);});
+        $( '#btnDecTimer'       ).click( function() {
+            if (timer.value - 5 > 0) {
+                timer.set_value(timer.value -= 5);
+            }
+            return;
+        });
+
         $( '#btnIncTimer'       ).click( function() {timer.set_value(timer.value += 5);});
         
         $( '#btnReset'          ).click( reset );
