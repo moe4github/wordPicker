@@ -64,18 +64,30 @@ body {
 }
 
 .dropdown-menu {
-    min-width: 0px;
+    min-width:      0px;
 }
 
-.times-up {
+.char-rotation {
+    animation:      rotation 3s 3 ease-in-out;
+    /*
     animation-name:             rotation;
     animation-duration:         3s;
     animation-timing-function:  ease-in-out;
     animation-iteration-count:  3;
+    */
+}
+
+.bg-animation {
+    animation:      pulse 2s infinite;
 }
 
 @keyframes rotation {
-    from    { transform: rotate(1deg);}
+    from    { transform: rotate(1deg);  }
     to      { transform: rotate(360deg);}
+}
+
+@keyframes pulse {
+    0%      { background-color: #001F3F; }
+    100%    { background-color: #FF4136; }
 }
 

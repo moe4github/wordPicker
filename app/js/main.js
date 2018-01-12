@@ -64,13 +64,18 @@
                                     return;
                                 };
 
-        self.stop           = function()
+        self.reset          = function()
                                 {
                                     if ( self.interval_id !== null ) {
                                         window.clearInterval(self.interval_id);
                                         self.set_value(self.default_value);
                                     }
-                                    
+                                }
+
+        self.stop           = function()
+                                {
+                                    self.reset();
+
                                     if ( self.stop_fkt !== null) {
                                         self.stop_fkt();
                                     }
@@ -179,10 +184,12 @@
     }
     
     function start_timer () {
-        $( '#char-select' ).removeClass('times-up');
+        $( '#char-select'   ).removeClass('char-rotation');
+        $( '#char-select-bg').removeClass('bg-animation');
         
         $('#btnStart')
-            .toggleClass('btn-success btn-danger')
+            .addClass('btn-danger')
+            .removeClass('btn-success')
             .prop('disabled', true);
 
         timer.start(stop_timer);
@@ -190,10 +197,12 @@
     }
 
     function stop_timer () {
-        $( '#char-select' ).addClass('times-up');
+        $( '#char-select'   ).addClass('char-rotation');
+        $( '#char-select-bg').addClass('bg-animation');
         
         $('#btnStart')
-            .toggleClass('btn-success btn-danger')
+            .addClass('btn-success')
+            .removeClass('btn-danger')
             .prop('disabled', false);
 
         // play sound file
@@ -210,7 +219,16 @@
             clearInterval(global_vars.interval_id);
         }
         
-        timer.stop();
+        timer.reset();
+        
+        $( '#char-select'   ).removeClass('char-rotation');
+        $( '#char-select-bg').removeClass('bg-animation');
+        
+        $('#btnStart')
+            .addClass('btn-success')
+            .removeClass('btn-danger')
+            .prop('disabled', false);
+        
         init_char_list();
         return;
     }
