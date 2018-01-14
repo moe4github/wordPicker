@@ -1,3 +1,6 @@
+// Add visual timer 3-2-1 before show selected char
+// Add sound wrapper if a workaround for ios exist
+
 
 ( function() {
 
@@ -99,7 +102,7 @@
     /* init function*/
     function init() {
 
-        timer = new Timer(75);
+        timer = new Timer( app_config.default_timer );
         timer.set_bind_node( document.getElementById('btnTimer') );
 
         $( '#btnStart'          ).click( get_char );
@@ -127,8 +130,6 @@
     function get_char() {
         if (typeof global_vars.interval_id !== 'undefined') { clearInterval(global_vars.interval_id); }
         
-        $( '#char_list' ).collapse('hide');
-
         start_timer();
         $('#char-select').text( start_word_picker() );
         return;
@@ -141,9 +142,15 @@
         if ( chars.length > 0 ) {
             var char_id     = getRandomInt(0, chars.length - 1);
             var picked_char = chars[char_id].dataset.buchstabe;
-           
-            $(chars[char_id]).toggleClass('char_selected char_aktiv');
+            
+            // Bei letzten Buchstaben soll die Liste eingeblendet werden,
+            // ansonsten soll die Liste ausgeblendet sein.
+            chars.length == 1
+            ?   $( '#char_list' ).collapse('show')
+            :   $( '#char_list' ).collapse('hide');
 
+            $(chars[char_id]).toggleClass('char_selected char_aktiv');
+            
             return picked_char;
         }
         return;

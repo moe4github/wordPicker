@@ -3,5 +3,5 @@
 //
 
 var app_config = {
-
+    default_timer: 75,
 }
